@@ -1,8 +1,9 @@
 import { createACPProvider } from "@mcpc-tech/acp-ai-provider";
-import { streamText } from "ai";
+import { convertToModelMessages, streamText } from "ai";
 
 const provider = createACPProvider({
-  command: "claude-agent-acp",
+  // command: "claude-agent-acp",
+  command: "codex-acp",
   args: [],
   session: {
     cwd: process.cwd(),
@@ -11,12 +12,18 @@ const provider = createACPProvider({
 });
 
 export async function POST(req: Request) {
-  const { prompt }: { prompt?: string } = await req.json();
+  const data = await req.json();
+  console.log(data);
 
   const result = streamText({
     model: provider.languageModel(),
     system: "You are a helpful assistant.",
-    prompt: prompt ?? "Write a simple Hello World program",
+    messages: await convertToModelMessages(data.messages ?? [
+      {
+        role: "user",
+        content: "Write a simple Hello World program",
+      },
+    ]),
     tools: provider.tools,
   });
 
