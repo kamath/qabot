@@ -3,7 +3,8 @@ import {
 	type SanityCheckResponse,
 } from "backend/contracts"
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:6970"
+const backendUrl =
+	process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:6970"
 
 export async function checkBackendSanity(): Promise<SanityCheckResponse> {
 	const response = await fetch(`${backendUrl}/api/sanity`)

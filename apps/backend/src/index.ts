@@ -32,10 +32,7 @@ export type AppType = typeof app
 export { app }
 
 export default {
-	async fetch(
-		request: Request,
-		env: Bindings,
-	): Promise<Response> {
+	async fetch(request: Request, env: Bindings): Promise<Response> {
 		const origin = request.headers.get("origin") ?? "*"
 
 		if (request.method === "OPTIONS") {

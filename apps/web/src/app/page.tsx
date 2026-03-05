@@ -78,7 +78,7 @@ export default function Home() {
 										{JSON.stringify(part, null, 2)}
 									</pre>
 								)
-					}
+						}
 					})}
 					<br />
 				</div>
