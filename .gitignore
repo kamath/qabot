@@ -16,3 +16,4 @@ dist/
 .output
 .context/
 openapi.json
+**/.next
