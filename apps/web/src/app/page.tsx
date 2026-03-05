@@ -5,7 +5,9 @@ import {
 	DefaultChatTransport,
 	lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai"
+import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
+import { checkBackendSanity } from "@/lib/backend-client"
 
 export default function Home() {
 	const { messages, sendMessage, addToolOutput } = useChat({
@@ -19,10 +21,48 @@ export default function Home() {
 			}
 		},
 	})
+
 	const [input, setInput] = useState("")
+
+	const {
+		data: sanityCheck,
+		isLoading: sanityLoading,
+		error: sanityError,
+		refetch: runSanityCheck,
+		isFetching: sanityChecking,
+	} = useQuery({
+		queryKey: ["backendSanity"],
+		queryFn: checkBackendSanity,
+		enabled: false,
+	})
 
 	return (
 		<main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-10">
+			<section className="rounded-lg border p-4">
+				<h2 className="mb-2 text-lg font-semibold">Backend sanity check</h2>
+				<button
+					type="button"
+					onClick={() => runSanityCheck()}
+					className="rounded-md border px-3 py-1.5"
+					disabled={sanityChecking}
+				>
+					{sanityChecking ? "Checking..." : "Run sanity check"}
+				</button>
+				{sanityLoading ? <p>Waiting for backend response…</p> : null}
+				{sanityError ? (
+					<p className="text-red-600">
+						{sanityError instanceof Error
+							? sanityError.message
+							: "Sanity check failed"}
+					</p>
+				) : null}
+				{sanityCheck ? (
+					<pre className="mt-2 whitespace-pre-wrap">
+						{JSON.stringify(sanityCheck, null, 2)}
+					</pre>
+				) : null}
+			</section>
+
 			{messages?.map(message => (
 				<div key={message.id}>
 					<strong>{`${message.role}: `}</strong>
@@ -38,98 +78,7 @@ export default function Home() {
 										{JSON.stringify(part, null, 2)}
 									</pre>
 								)
-						}
-
-						// if (!part.type.startsWith("tool-")) {
-						//   return (
-						//     <pre key={`${message.id}-part-${index}`}>
-						//       {JSON.stringify(part, null, 2)}
-						//     </pre>
-						//   );
-						// }
-
-						// const toolName = part.type.slice("tool-".length);
-						// const callId =
-						//   "toolCallId" in part ? part.toolCallId : `${message.id}-${index}`;
-
-						// if (!("state" in part)) {
-						//   return (
-						//     <pre key={callId}>
-						//       {toolName}: {JSON.stringify(part, null, 2)}
-						//     </pre>
-						//   );
-						// }
-
-						// switch (part.state) {
-						//   case "input-streaming":
-						//     return <div key={callId}>Preparing {toolName} request...</div>;
-						//   case "input-available": {
-						//     const inputPayload = "input" in part ? part.input : undefined;
-						//     const messageFromInput =
-						//       typeof inputPayload === "object" &&
-						//       inputPayload !== null &&
-						//       "message" in inputPayload
-						//         ? String(inputPayload.message)
-						//         : null;
-
-						//     return (
-						//       <div key={callId}>
-						//         <div>{messageFromInput ?? `${toolName} is awaiting input.`}</div>
-						//         <pre>{JSON.stringify(inputPayload, null, 2)}</pre>
-						//         <div className="flex gap-2">
-						//           <button
-						//             type="button"
-						//             className="rounded-md border px-3 py-1"
-						//             onClick={() =>
-						//               addToolOutput({
-						//                 tool: toolName,
-						//                 toolCallId: callId,
-						//                 output: "Yes, confirmed.",
-						//               })
-						//             }
-						//           >
-						//             Yes
-						//           </button>
-						//           <button
-						//             type="button"
-						//             className="rounded-md border px-3 py-1"
-						//             onClick={() =>
-						//               addToolOutput({
-						//                 tool: toolName,
-						//                 toolCallId: callId,
-						//                 output: "No, denied.",
-						//               })
-						//             }
-						//           >
-						//             No
-						//           </button>
-						//         </div>
-						//       </div>
-						//     );
-						//   }
-						//   case "output-available":
-						//     return (
-						//       <div key={callId}>
-						//         {toolName}:{" "}
-						//         {"output" in part && typeof part.output === "string"
-						//           ? part.output
-						//           : JSON.stringify("output" in part ? part.output : null)}
-						//       </div>
-						//     );
-						//   case "output-error":
-						//     return (
-						//       <div key={callId}>
-						//         Error in {toolName}:{" "}
-						//         {"errorText" in part ? part.errorText : "Unknown error"}
-						//       </div>
-						//     );
-						//   default:
-						//     return (
-						//       <pre key={callId}>
-						//         {toolName}: {JSON.stringify(part, null, 2)}
-						//       </pre>
-						//     );
-						// }
+					}
 					})}
 					<br />
 				</div>

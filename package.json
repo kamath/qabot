@@ -6,6 +6,7 @@
 		"preinstall": "npx only-allow pnpm",
 		"postinstall": "turbo run build",
 		"build": "turbo run build",
+		"dev:apps": "pnpm -r --parallel --filter @qabot/web --filter backend run dev",
 		"dev": "node scripts/dev-setup.mjs && turbo run dev",
 		"lint": "turbo run lint",
 		"check": "biome check --error-on-warnings",
