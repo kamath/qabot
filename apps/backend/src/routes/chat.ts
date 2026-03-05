@@ -1,21 +1,30 @@
 import { Hono } from "hono"
-import { convertToModelMessages, streamText, type ToolSet } from "ai"
+import {
+	convertToModelMessages,
+	streamText,
+	type UIMessage,
+	type ToolSet,
+} from "ai"
 import { ChatRequestSchema } from "../schemas"
 
 const chat = new Hono()
+type LegacyMessage = Omit<UIMessage<unknown, unknown, unknown>, "id">
+
+const fallbackMessage: LegacyMessage[] = [
+	{
+		role: "user",
+		parts: [{ type: "text", text: "Write a simple Hello World program" }],
+	},
+]
 
 chat.post("/chat", async c => {
 	const body = await c.req.json().catch(() => ({}))
 	const parsedBody = ChatRequestSchema.safeParse(body)
-	const messages =
+	const messages: LegacyMessage[] =
 		parsedBody.success && parsedBody.data.messages
-			? parsedBody.data.messages
-			: [
-				{
-					role: "user",
-					content: "Write a simple Hello World program",
-				},
-			]
+			? (parsedBody.data.messages as LegacyMessage[])
+			: fallbackMessage
+	const modelMessages = await convertToModelMessages(messages)
 
 	const { createACPProvider } = await import("@mcpc-tech/acp-ai-provider")
 	const provider = createACPProvider({
@@ -30,7 +39,7 @@ chat.post("/chat", async c => {
 	const result = streamText({
 		model: provider.languageModel(),
 		system: "You are a helpful assistant.",
-		messages: convertToModelMessages(messages),
+		messages: modelMessages,
 		tools: provider.tools as unknown as ToolSet,
 	})
 

@@ -35,7 +35,6 @@ export default {
 	async fetch(
 		request: Request,
 		env: Bindings,
-		ctx: ExecutionContext,
 	): Promise<Response> {
 		const origin = request.headers.get("origin") ?? "*"
 
@@ -49,7 +48,7 @@ export default {
 			})
 		}
 
-		const response = await app.fetch(request, env, ctx)
+		const response = await app.fetch(request, env)
 		return withCors(request, response)
 	},
 }
