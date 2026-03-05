@@ -1,0 +1,69 @@
+/**
+ * Send an email notification via the Flamecast email API.
+ *
+ * Env vars:
+ *   INPUT_SUBJECT   – email subject line
+ *   INPUT_TEXT       – email body text (required)
+ *   INPUT_FILEPATHS – newline-separated file paths to attach (optional)
+ *   INPUT_API_KEY   – Flamecast API key (required)
+ */
+
+import { Smithery } from "@flamecast/api";
+import { existsSync, readFileSync } from "node:fs";
+import { basename } from "node:path";
+
+const subject = process.env.INPUT_SUBJECT || "Flamecast Run Report";
+const text = process.env.INPUT_TEXT;
+const filepaths = process.env.INPUT_FILEPATHS || "";
+const apiKey = process.env.INPUT_API_KEY;
+
+if (!text) {
+  console.error("Missing required env: INPUT_TEXT");
+  process.exit(1);
+}
+if (!apiKey) {
+  console.error("FLAMECAST_API_KEY secret is not set. Configure it in your repository secrets.");
+  process.exit(1);
+}
+
+const CONTENT_TYPES: Record<string, string> = {
+  ".md": "text/markdown",
+  ".txt": "text/plain",
+  ".json": "application/json",
+  ".csv": "text/csv",
+  ".pdf": "application/pdf",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+};
+
+interface Attachment {
+  content: string;
+  filename: string;
+  contentType: string;
+}
+
+const attachments: Attachment[] = [];
+
+for (const line of filepaths.split("\n")) {
+  const filepath = line.trim();
+  if (!filepath) continue;
+
+  if (!existsSync(filepath)) {
+    console.warn(`Warning: ${filepath} not found, skipping`);
+    continue;
+  }
+
+  const content = Buffer.from(readFileSync(filepath)).toString("base64");
+  const filename = basename(filepath);
+  const ext = filepath.slice(filepath.lastIndexOf("."));
+  const contentType = CONTENT_TYPES[ext] || "application/octet-stream";
+
+  attachments.push({ content, filename, contentType });
+}
+
+const client = new Smithery({ apiKey });
+
+await client.post("/email", { body: { subject, text, attachments } });
+
+console.log("Email sent successfully");

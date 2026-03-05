@@ -1,0 +1,1 @@
+ALTER TABLE "flamecast"."tasks" ADD COLUMN "output" text;

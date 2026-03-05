@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "qabot",
   "private": true,
   "version": "0.1.0",
@@ -23,4 +24,52 @@
     "sharp",
     "unrs-resolver"
   ]
+=======
+	"name": "flamecast-monorepo",
+	"private": true,
+	"packageManager": "pnpm@10.29.2",
+	"scripts": {
+		"preinstall": "npx only-allow pnpm",
+		"postinstall": "turbo run build",
+		"build": "turbo run build",
+		"dev": "node scripts/dev-setup.mjs && turbo run dev",
+		"lint": "turbo run lint",
+		"check": "biome check --error-on-warnings",
+		"fmt": "biome check --write --unsafe",
+		"test": "turbo run test",
+		"typecheck": "turbo run check-types",
+		"secrets:pull": "turbo run secrets:pull",
+		"secrets:push": "turbo run secrets:push",
+		"prepare": "husky",
+		"link:cli": "node scripts/dev-setup.mjs && pnpm build && cd packages/cli && pnpm link --global"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.3",
+		"husky": "^9.1.7",
+		"turbo": "^2.7.3"
+	},
+	"engines": {
+		"node": ">=18",
+		"pnpm": ">=10"
+	},
+	"pnpm": {
+		"overrides": {
+			"miniflare>zod": "^3.24.0",
+			"@types/react": "^19.0.7",
+			"@types/react-dom": "^19.0.0"
+		},
+		"packageExtensions": {
+			"react-remove-scroll": {
+				"dependencies": {
+					"tslib": "^2"
+				}
+			}
+		}
+	},
+	"overrides": {
+		"@cloudflare/workers-types": "4.20251213.0",
+		"@types/react": "^19.0.7",
+		"zod": "^4.1.13"
+	}
+>>>>>>> bc40fa2 (actual monorepo)
 }

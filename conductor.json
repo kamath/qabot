@@ -1,0 +1,6 @@
+{
+	"scripts": {
+		"setup": "pnpm install && pnpm secrets:pull",
+		"run": "pnpm dev"
+	}
+}

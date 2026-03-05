@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "dev": {
@@ -13,4 +14,65 @@
       "outputs": []
     }
   }
+=======
+	"$schema": "https://turborepo.com/schema.json",
+	"ui": "tui",
+	"tasks": {
+		"cf-typegen": {
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["worker-configuration.d.ts"]
+		},
+		"secrets:pull": {
+			"cache": false
+		},
+		"secrets:push": {
+			"cache": false
+		},
+		"build": {
+			"dependsOn": ["^build", "cf-typegen"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*", ".dev.vars*"],
+			"outputs": ["dist/**"]
+		},
+		"lint": {
+			"dependsOn": ["^lint"]
+		},
+		"fmt": {
+			"dependsOn": ["^fmt"]
+		},
+		"check": {
+			"dependsOn": ["^check"]
+		},
+		"check-types": {
+			"dependsOn": ["^check-types", "cf-typegen"]
+		},
+		"compile": {
+			"dependsOn": ["build"],
+			"inputs": ["src/**", "scripts/**", "package.json"],
+			"outputs": ["dist/bin/**"]
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"cache": false
+		},
+		"dev": {
+			"dependsOn": ["^build"],
+			"cache": false,
+			"persistent": true
+		}
+	},
+	"globalEnv": [
+		"NODE_ENV",
+		"DATABASE_URL",
+		"GITHUB_APP_CLIENT_ID",
+		"GITHUB_APP_CLIENT_SECRET",
+		"GITHUB_TOKEN",
+		"POSTHOG_ENV_ID",
+		"POSTHOG_PERSONAL_API_KEY",
+		"WORKOS_API_KEY",
+		"WORKOS_CLIENT_ID",
+		"WORKOS_COOKIE_PASSWORD",
+		"REDIRECT_URI",
+		"VITE_BACKEND_URL"
+	]
+>>>>>>> bc40fa2 (actual monorepo)
 }

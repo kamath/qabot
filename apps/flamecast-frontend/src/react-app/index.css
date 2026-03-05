@@ -1,0 +1,293 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@source "../../node_modules/streamdown/dist/*.js";
+
+@font-face {
+  font-family: 'GT Pantheon Micro';
+  src: url('./assets/fonts/gt-pantheon-micro-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GT Pantheon Micro';
+  src: url('./assets/fonts/gt-pantheon-micro-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    --smithery-orange: hsl(20.08, 100%, 50.2%);
+    --smithery-off-black: hsl(0, 0%, 13.73%);
+    --smithery-off-white: hsl(48, 43.86%, 88.82%);
+    --smithery-yellow: hsl(48.4, 100%, 64.51%);
+    --smithery-maroon: hsl(8.28, 89.23%, 25.49%);
+
+    --cream: var(--smithery-off-white);
+    --ink: var(--smithery-off-black);
+    --light-gray: var(--smithery-off-white);
+
+    --charcoal: var(--smithery-off-black);
+    --dim: hsl(0 0% 24%);
+    --warm-gray: hsl(48 6% 70%);
+    --warm-dark: hsl(48 6% 30%);
+    --red: hsl(0 72% 51%);
+
+    --white: hsl(0 0% 100%);
+    --black: hsl(0 0% 0%);
+    --gray: hsl(0 0% 40%);
+    --medium-gray: hsl(0 0% 68%);
+    --gold: var(--smithery-yellow);
+    --dark-red: var(--smithery-maroon);
+
+    --background: var(--cream);
+    --foreground: var(--ink);
+    --card: var(--surface);
+    --card-foreground: var(--surface-foreground);
+    --popover: var(--white);
+    --popover-foreground: var(--ink);
+    --primary: var(--ink);
+    --primary-foreground: var(--white);
+    --secondary: var(--warm-gray);
+    --secondary-foreground: var(--ink);
+    --muted: var(--warm-gray);
+    --muted-foreground: var(--gray);
+    --accent: var(--gold);
+    --accent-foreground: var(--ink);
+    --destructive: var(--dark-red);
+    --border: var(--medium-gray);
+    --input: var(--medium-gray);
+    --ring: var(--gold);
+    --chart-1: var(--orange);
+    --chart-2: var(--gold);
+    --chart-3: var(--dark-red);
+    --chart-4: var(--gray);
+    --chart-5: var(--cream);
+    --radius: 0.4rem;
+
+    /* Used in sidebar, cards, etc. */
+    --surface-subtle: color-mix(in srgb, var(--background) 94%, var(--foreground));
+    --surface-subtle-foreground: color-mix(in srgb, var(--foreground) 94%, var(--background));
+    --surface: color-mix(in srgb, var(--background) 88%, var(--foreground));
+    --surface-foreground: color-mix(in srgb, var(--foreground) 88%, var(--background));
+
+
+    --sidebar: var(--surface-subtle);
+    --sidebar-foreground: var(--surface-subtle-foreground);
+    --sidebar-primary: var(--surface-subtle-foreground);
+    --sidebar-primary-foreground: var(--surface-subtle);
+    --sidebar-accent: color-mix(in srgb, var(--surface-subtle-foreground) 10%, transparent);
+    --sidebar-accent-foreground: var(--sidebar-foreground);
+    --sidebar-border: hsl(0 0% 68% / 0.3);
+    --sidebar-ring: var(--accent);
+}
+
+.dark {
+    --background: var(--ink);
+    --foreground: var(--cream);
+    --popover: var(--ink);
+    --popover-foreground: var(--cream);
+    --primary: var(--cream);
+    --primary-foreground: var(--ink);
+    --secondary: var(--smithery-off-white);
+    --secondary-foreground: var(--ink);
+    --muted: var(--dim);
+    --muted-foreground: var(--warm-gray);
+    --accent: var(--gold);
+    --accent-foreground: var(--ink);
+    --destructive: var(--red);
+    --border: var(--warm-dark);
+    --input: var(--warm-dark);
+    --ring: var(--gold);
+    --chart-1: var(--orange);
+    --chart-2: var(--gold);
+    --chart-3: var(--red);
+    --chart-4: var(--warm-gray);
+    --chart-5: var(--charcoal);
+}
+
+@theme inline {
+    --font-sans: 'GT Pantheon Micro', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --color-smithery-off-white: var(--smithery-off-white);
+    --color-smithery-off-black: var(--smithery-off-black);
+    --color-smithery-orange: var(--smithery-orange);
+    --color-smithery-yellow: var(--smithery-yellow);
+    --color-smithery-maroon: var(--smithery-maroon);
+    --color-cream: var(--cream);
+    --color-ink: var(--ink);
+    --color-light-gray: var(--light-gray);
+    --color-charcoal: var(--charcoal);
+    --color-dim: var(--dim);
+    --color-warm-gray: var(--warm-gray);
+    --color-warm-dark: var(--warm-dark);
+    --color-red: var(--red);
+    --color-gold: var(--gold);
+    --color-dark-red: var(--dark-red);
+    --color-white: var(--white);
+    --color-black: var(--black);
+    --color-gray: var(--gray);
+    --color-medium-gray: var(--medium-gray);
+    --color-gold: var(--gold);
+    --color-dark-red: var(--dark-red);
+    --color-white: var(--white);
+    --color-black: var(--black);
+    --color-surface-subtle: var(--surface-subtle);
+    --color-surface-subtle-foreground: var(--surface-subtle-foreground);
+    --color-surface: var(--surface);
+    --color-surface-foreground: var(--surface-foreground);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-2xl: calc(var(--radius) + 8px);
+    --radius-3xl: calc(var(--radius) + 12px);
+    --radius-4xl: calc(var(--radius) + 16px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply font-sans bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+
+@utility shadow-primary-glow-sm {
+  box-shadow: 0 0 15px color-mix(in srgb, var(--orange) 6%, transparent);
+}
+@utility shadow-primary-glow {
+  box-shadow: 0 0 20px color-mix(in srgb, var(--orange) 8%, transparent);
+}
+@utility shadow-float {
+  box-shadow:
+    0 8px 24px -4px hsl(0 0% 0% / 0.12),
+    0 4px 8px -2px hsl(0 0% 0% / 0.06),
+    2px 0 8px -4px hsl(0 0% 0% / 0.03),
+    -2px 0 8px -4px hsl(0 0% 0% / 0.03);
+  transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+  &:hover {
+    box-shadow:
+      0 2px 6px -2px hsl(0 0% 0% / 0.08),
+      0 1px 3px -1px hsl(0 0% 0% / 0.04),
+      1px 0 4px -2px hsl(0 0% 0% / 0.02),
+      -1px 0 4px -2px hsl(0 0% 0% / 0.02);
+  }
+}
+@utility text-soft {
+  color: color-mix(in srgb, var(--foreground) 88%, transparent);
+}
+@utility text-soft-muted {
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+@utility dark-scrollbar {
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+  &::-webkit-scrollbar-track {
+    background: color-mix(in srgb, var(--muted) 20%, transparent);
+    border-radius: var(--radius);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--border) 50%, transparent);
+    border-radius: var(--radius);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--border) 70%, transparent);
+  }
+  .dark &::-webkit-scrollbar-track {
+    background: color-mix(in srgb, var(--muted) 30%, transparent);
+  }
+  .dark &::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--border) 60%, transparent);
+  }
+  .dark &::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--border) 80%, transparent);
+  }
+}
+@utility light-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: hsl(24 5.4% 35% / 0.3);
+    border-radius: var(--radius);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: hsl(24 5.4% 45% / 0.5);
+  }
+}
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+@utility code-scrollbar {
+  &::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  &.hide-until-hover::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &.hide-until-hover:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

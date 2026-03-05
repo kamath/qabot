@@ -1,0 +1,35 @@
+{
+	"name": "flamecast",
+	"version": "0.5.0",
+	"type": "module",
+	"bin": {
+		"flame": "./dist/cli.js"
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsc",
+		"check-types": "tsc --noEmit",
+		"cli": "tsx src/cli.ts",
+		"cli:local": "FLAMECAST_BASE_URL=http://localhost:6970 tsx src/cli.ts",
+		"secrets:pull": "infisical export --path=/packages/cli --env=dev --format=dotenv > .env",
+		"secrets:push": "infisical secrets set --file=.env --path=/packages/cli --env=dev"
+	},
+	"dependencies": {
+		"@clack/prompts": "^0.9",
+		"@flamecast/api": "https://pkg.stainless.com/s/flamecast-typescript/cda3a6d600de7a02fab9af1b713963a326692690/dist.tar.gz",
+		"@workos-inc/node": "^8",
+		"commander": "^14.0.3",
+		"dotenv": "^17.3.1"
+	},
+	"devDependencies": {
+		"@flamecast/typescript-config": "workspace:*",
+		"@types/node": "^20.19.25",
+		"tsx": "^4.21.0",
+		"typescript": "latest"
+	}
+}

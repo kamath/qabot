@@ -1,0 +1,48 @@
+/**
+ * Notify Flamecast backend of a task lifecycle transition.
+ *
+ * Env vars:
+ *   WORKSPACE_ID  – workspace UUID
+ *   RUN_ID        – GitHub Actions run ID (used as task ID)
+ *   LIFECYCLE_EVENT – one of: started, workflow_complete, outputs_stored
+ *   OUTPUT_FILE   – (optional) path to a file whose contents become the `output` field
+ *   FLAMECAST_API_URL – base API URL (default https://api.flamecast.dev)
+ *   FLAMECAST_API_KEY – bearer token
+ */
+
+import { Smithery } from "@flamecast/api";
+
+const workspaceId = process.env.WORKSPACE_ID;
+const runId = process.env.RUN_ID;
+const lifecycle = process.env.LIFECYCLE_EVENT;
+const apiUrl = process.env.FLAMECAST_API_URL || "https://api.flamecast.dev";
+const apiKey = process.env.FLAMECAST_API_KEY;
+
+if (!workspaceId) {
+  console.log("No workspace ID found, skipping lifecycle notification");
+  process.exit(0);
+}
+if (!runId || !lifecycle || !apiKey) {
+  console.error("Missing required env: RUN_ID, LIFECYCLE_EVENT, or FLAMECAST_API_KEY");
+  process.exit(1);
+}
+
+const client = new Smithery({ apiKey, baseURL: apiUrl });
+
+const body: Record<string, string> = { lifecycle };
+
+const outputFile = process.env.OUTPUT_FILE;
+if (outputFile) {
+  const file = Bun.file(outputFile);
+  if (await file.exists()) {
+    body.output = await file.text();
+  }
+}
+
+try {
+  await client.put(`/workspaces/${workspaceId}/tasks/${runId}/lifecycle`, { body });
+  console.log(`Lifecycle '${lifecycle}' notified successfully`);
+} catch (err: any) {
+  console.error(`Lifecycle notification failed: ${err.status ?? ""} ${err.message}`);
+  process.exit(1);
+}

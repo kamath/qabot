@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs['packages/cli--release_created'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: release-please
+    permissions:
+      contents: write # Needed to push the canary tag if desired
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for versioning
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter flamecast build
+
+      # CASE 1: PROD RELEASE (When Release Please creates a release)
+      - name: Publish Production
+        if: needs.release-please.outputs.release_created == 'true'
+        working-directory: packages/cli
+        run: npm publish --access public
+
+      # CASE 2: CANARY RELEASE (On every other push to main)
+      - name: Publish Canary
+        if: needs.release-please.outputs.release_created != 'true'
+        working-directory: packages/cli
+        run: |
+          # Bump version to a canary format: 0.3.0 -> 0.3.0-canary.<timestamp>
+          pnpm version $(node -p "require('./package.json').version")-canary.$(date +%Y%m%d%H%M%S) --no-git-tag-version
+          npm publish --access public --tag canary
