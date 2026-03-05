@@ -10,7 +10,7 @@ const CORS_HEADERS = {
 	"Access-Control-Max-Age": "86400",
 }
 
-export type Bindings = {}
+export type Bindings = Record<string, unknown>
 
 function withCors(request: Request, response: Response): Response {
 	const origin = request.headers.get("origin") ?? "*"

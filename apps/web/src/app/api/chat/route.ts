@@ -1,5 +1,5 @@
 import { createACPProvider } from "@mcpc-tech/acp-ai-provider"
-import { convertToModelMessages, streamText, type ToolSet } from "ai"
+import { convertToModelMessages, streamText } from "ai"
 
 const provider = createACPProvider({
 	// command: "claude-agent-acp",
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 				},
 			],
 		),
-		tools: provider.tools as unknown as ToolSet,
+		tools: provider.tools,
 	})
 
 	return result.toUIMessageStreamResponse()
