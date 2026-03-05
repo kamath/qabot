@@ -1,26 +1,7 @@
-<<<<<<< HEAD
-This repository is now a Turborepo with a single app package: `apps/web`.
-=======
 # Flamecast (Internal)
->>>>>>> bc40fa2 (actual monorepo)
 
 Internal infrastructure for [Flamecast](https://flamecast.dev) — the AI coding agent that runs as a GitHub Action.
 
-<<<<<<< HEAD
-From the repository root, use Turbo:
-
-```bash
-bun run dev
-
-# Build and lint all packages
-bun run build
-bun run lint
-```
-
-Open [http://localhost:3000](http://localhost:3000) to run the app from `apps/web`.
-
-You can start editing the page by modifying `apps/web/src/app/page.tsx`. The page auto-updates as you edit the file.
-=======
 The public-facing GitHub Action and API schemas live in [smithery-ai/flamecast](https://github.com/smithery-ai/flamecast).
 
 ## Architecture
@@ -41,7 +22,6 @@ packages/
 ## Cloudflare type generation
 
 `pnpm i` runs the monorepo `postinstall` build, which triggers each app's `cf-typegen` task.
->>>>>>> bc40fa2 (actual monorepo)
 
 `cf-typegen` now prefers committed template files (`.env.example` / `.dev.vars.example`) via `wrangler types --env-file ...`. This keeps generated `worker-configuration.d.ts` stable across machines instead of drifting with local secret files.
 
