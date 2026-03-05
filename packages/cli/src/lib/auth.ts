@@ -24,6 +24,8 @@ interface AuthResult {
 	pendingAuthenticationToken?: string
 }
 
+const SANITY_URL = `${FLAMECAST_BASE_URL.replace(/\/+$/, "")}/sanity`
+
 /**
  * Authenticates via WorkOS Authorization Code flow with PKCE.
  *
@@ -133,64 +135,29 @@ export async function verifyEmailAndExchange(
 
 /**
  * Ensures the user is authenticated. Returns a valid API key.
- * If no valid key exists, runs the auth flow.
+ * Uses backend sanity check for validation. No auth exchange is performed here.
  */
 export async function ensureAuthenticated() {
 	const config = loadConfig()
 	if (config?.apiKey) {
-		try {
-			const res = await fetch(`${FLAMECAST_BASE_URL}/auth/check`, {
-				headers: { Authorization: `Bearer ${config.apiKey}` },
-			})
-			if (res.ok) return { apiKey: config.apiKey }
-		} catch {
-			// Network error — fall through to re-authenticate
+		const sanityRes = await fetch(SANITY_URL)
+		if (sanityRes.ok) {
+			return { apiKey: config.apiKey }
 		}
 		console.warn("Key or base URL is invalid, re-authenticating...")
+		throw new Error("Backend returned non-ok from sanity check")
 	}
 
-	try {
-		console.log("Opening browser to authenticate...")
-		const result = await authenticateViaBrowser()
-
-		let apiKey: string
-		if (result.pendingAuthenticationToken) {
-			// Email verification required — prompt in terminal
-			const readline = await import("node:readline")
-			const rl = readline.createInterface({
-				input: process.stdin,
-				output: process.stdout,
-			})
-			const code = await new Promise<string>(resolve => {
-				rl.question(
-					"Check your email for a verification code and enter it here: ",
-					answer => {
-						rl.close()
-						resolve(answer.trim())
-					},
-				)
-			})
-			apiKey = await verifyEmailAndExchange(
-				result.pendingAuthenticationToken,
-				code,
-				result.githubToken,
-			)
-		} else {
-			apiKey = await exchangeForApiKey({
-				refreshToken: result.refreshToken,
-				...(result.githubToken && { githubToken: result.githubToken }),
-			})
-		}
-
-		saveConfig({ apiKey })
-		return { apiKey }
-	} catch (err) {
-		console.error(
-			`Authentication failed: ${err instanceof Error ? err.message : err}`,
+	const sanityRes = await fetch(SANITY_URL)
+	if (!sanityRes.ok) {
+		throw new Error(
+			`Backend sanity check failed with status ${sanityRes.status}`,
 		)
-		console.error("Run `flame cast add` to set up authentication.")
-		process.exit(1)
 	}
+
+	throw new Error(
+		"API key not configured. This CLI is in sanity-check mode and does not perform auth token exchange.",
+	)
 }
 
 export const getFlamecastApiKey = async () => {
