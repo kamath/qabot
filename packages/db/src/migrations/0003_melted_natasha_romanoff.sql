@@ -1,2 +1,0 @@
-ALTER TABLE "flamecast"."user_organizations" ADD COLUMN "default_workspace_id" uuid;--> statement-breakpoint
-ALTER TABLE "flamecast"."user_organizations" ADD CONSTRAINT "user_organizations_default_workspace_id_workspaces_id_fk" FOREIGN KEY ("default_workspace_id") REFERENCES "flamecast"."workspaces"("id") ON DELETE set null ON UPDATE no action;

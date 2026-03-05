@@ -17,14 +17,11 @@
 		"dev": "wrangler dev --port 6970 --inspector-port 6971",
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "node ../../scripts/cf-typegen.mjs",
-		"build": "pnpm -r --filter '@flamecast/*' build && tsc --noEmit",
+		"build": "tsc --noEmit",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@flamecast/auth": "workspace:*",
-		"@flamecast/db": "workspace:*",
-		"@flamecast/utils": "workspace:*",
 		"@hono/standard-validator": "^0.2.2",
 		"@hono/swagger-ui": "^0.5.3",
 		"@mcpc-tech/acp-ai-provider": "^0.2.6",
