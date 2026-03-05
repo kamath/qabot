@@ -1,16 +1,6 @@
-import { createACPProvider } from "@mcpc-tech/acp-ai-provider"
-import { convertToModelMessages, streamText, type ToolSet } from "ai"
 import { Hono } from "hono"
-import { ChatRequestSchema } from "@flamecast/backend-schemas"
-
-const provider = createACPProvider({
-	command: "codex-acp",
-	args: [],
-	session: {
-		cwd: process.cwd(),
-		mcpServers: [],
-	},
-})
+import { convertToModelMessages, streamText, type ToolSet } from "ai"
+import { ChatRequestSchema } from "../schemas"
 
 const chat = new Hono()
 
@@ -26,6 +16,16 @@ chat.post("/chat", async c => {
 					content: "Write a simple Hello World program",
 				},
 			]
+
+	const { createACPProvider } = await import("@mcpc-tech/acp-ai-provider")
+	const provider = createACPProvider({
+		command: "codex-acp",
+		args: [],
+		session: {
+			cwd: process.cwd(),
+			mcpServers: [],
+		},
+	})
 
 	const result = streamText({
 		model: provider.languageModel(),

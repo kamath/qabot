@@ -33,9 +33,6 @@ importers:
       '@flamecast/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@flamecast/backend-schemas':
-        specifier: workspace:*
-        version: link:../../packages/backend-schemas
       '@flamecast/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -384,9 +381,6 @@ importers:
       '@ai-sdk/react':
         specifier: ^3.0.118
         version: 3.0.118(react@19.2.3)(zod@4.3.6)
-      '@flamecast/backend-schemas':
-        specifier: workspace:*
-        version: link:../../packages/backend-schemas
       '@mcpc-tech/acp-ai-provider':
         specifier: ^0.2.6
         version: 0.2.6
@@ -396,6 +390,9 @@ importers:
       ai:
         specifier: ^6.0.116
         version: 6.0.116(zod@4.3.6)
+      backend:
+        specifier: workspace:*
+        version: link:../backend
       hono:
         specifier: ^4.11.9
         version: 4.11.9
@@ -468,19 +465,6 @@ importers:
       hono:
         specifier: ^4.11.9
         version: 4.11.9
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/backend-schemas:
-    dependencies:
-      zod:
-        specifier: ^4.3.6
-        version: 4.3.6
-    devDependencies:
-      '@flamecast/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@ai-sdk/react": "^3.0.118",
-		"@flamecast/backend-schemas": "workspace:*",
+		"backend": "workspace:*",
 		"@mcpc-tech/acp-ai-provider": "^0.2.6",
 		"@tanstack/react-query": "^5.90.21",
 		"ai": "^6.0.116",

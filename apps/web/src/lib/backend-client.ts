@@ -1,13 +1,13 @@
 import { hc } from "hono/client"
-import type { AppType } from "../../../backend/src/index"
 import {
-	type SanityCheckResponse,
+	type AppType,
 	SanityCheckResponseSchema,
-} from "@flamecast/backend-schemas"
+	type SanityCheckResponse,
+} from "backend/contracts"
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:6970"
 
-export const backendClient = hc<AppType>(backendUrl || "http://localhost:6970")
+export const backendClient = hc<AppType>(backendUrl)
 
 export async function checkBackendSanity(): Promise<SanityCheckResponse> {
 	const response = await backendClient.api.sanity.$get()

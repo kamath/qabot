@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { SanityCheckResponseSchema } from "@flamecast/backend-schemas"
+import { SanityCheckResponseSchema } from "../schemas"
 
 const sanity = new Hono()
 

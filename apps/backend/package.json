@@ -1,6 +1,18 @@
 {
 	"name": "backend",
 	"type": "module",
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"default": "./src/index.ts"
+		},
+		"./contracts": {
+			"types": "./src/contracts.ts",
+			"default": "./src/contracts.ts"
+		}
+	},
 	"scripts": {
 		"dev": "wrangler dev --port 6970 --inspector-port 6971",
 		"deploy": "wrangler deploy --minify",
@@ -10,7 +22,6 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@flamecast/backend-schemas": "workspace:*",
 		"@flamecast/auth": "workspace:*",
 		"@flamecast/db": "workspace:*",
 		"@flamecast/utils": "workspace:*",
