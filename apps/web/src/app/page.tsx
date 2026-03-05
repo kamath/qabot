@@ -5,10 +5,16 @@ import {
   DefaultChatTransport,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
-import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { backendClient } from "./../lib/backend-client";
+import {
+  isBackendGreetingResponse,
+  isEchoResponse,
+} from "@qabot/rpc";
 
 export default function Home() {
-  const { messages, sendMessage, addToolOutput } = useChat({
+  const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
     }),
@@ -19,10 +25,72 @@ export default function Home() {
       }
     },
   });
+
   const [input, setInput] = useState("");
+
+  const { data: health, isLoading: isBackendLoading } = useQuery({
+    queryKey: ["backend", "ping"],
+    queryFn: async () => {
+      const res = await backendClient.ping.$get();
+      const payload = await res.json();
+
+      if (!isBackendGreetingResponse(payload)) {
+        throw new Error("Invalid ping response shape from backend");
+      }
+
+      return payload;
+    },
+  });
+
+  const echo = useMutation({
+    mutationFn: async (message: string) => {
+      const res = await backendClient.echo.$post({
+        json: { message },
+      });
+      const payload = await res.json();
+
+      if (!isEchoResponse(payload)) {
+        throw new Error("Invalid echo response shape from backend");
+      }
+
+      return payload.received;
+    },
+  });
+
+  const echoOutput = useMemo(() => {
+    if (!echo.data) return null;
+    return (
+      <p className="rounded-md border px-3 py-2">
+        Last echo: {echo.data}
+      </p>
+    );
+  }, [echo.data]);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-10">
+      <section className="rounded-md border p-4">
+        <h2 className="font-semibold">Backend via Hono RPC</h2>
+        {isBackendLoading ? (
+          <p>Checking backend…</p>
+        ) : (
+          <p>
+            Status: {health?.status} | Service: {health?.service} | Time: {health?.time}
+          </p>
+        )}
+
+        <button
+          className="mt-2 rounded-md border px-3 py-1"
+          onClick={() => {
+            echo.mutate(input || "hello from web");
+          }}
+          type="button"
+          disabled={echo.isPending}
+        >
+          {echo.isPending ? "Echoing..." : "Send echo to backend"}
+        </button>
+        {echoOutput}
+      </section>
+
       {messages?.map((message) => (
         <div key={message.id}>
           <strong>{`${message.role}: `}</strong>
@@ -39,97 +107,6 @@ export default function Home() {
                   </pre>
                 );
             }
-
-            // if (!part.type.startsWith("tool-")) {
-            //   return (
-            //     <pre key={`${message.id}-part-${index}`}>
-            //       {JSON.stringify(part, null, 2)}
-            //     </pre>
-            //   );
-            // }
-
-            // const toolName = part.type.slice("tool-".length);
-            // const callId =
-            //   "toolCallId" in part ? part.toolCallId : `${message.id}-${index}`;
-
-            // if (!("state" in part)) {
-            //   return (
-            //     <pre key={callId}>
-            //       {toolName}: {JSON.stringify(part, null, 2)}
-            //     </pre>
-            //   );
-            // }
-
-            // switch (part.state) {
-            //   case "input-streaming":
-            //     return <div key={callId}>Preparing {toolName} request...</div>;
-            //   case "input-available": {
-            //     const inputPayload = "input" in part ? part.input : undefined;
-            //     const messageFromInput =
-            //       typeof inputPayload === "object" &&
-            //       inputPayload !== null &&
-            //       "message" in inputPayload
-            //         ? String(inputPayload.message)
-            //         : null;
-
-            //     return (
-            //       <div key={callId}>
-            //         <div>{messageFromInput ?? `${toolName} is awaiting input.`}</div>
-            //         <pre>{JSON.stringify(inputPayload, null, 2)}</pre>
-            //         <div className="flex gap-2">
-            //           <button
-            //             type="button"
-            //             className="rounded-md border px-3 py-1"
-            //             onClick={() =>
-            //               addToolOutput({
-            //                 tool: toolName,
-            //                 toolCallId: callId,
-            //                 output: "Yes, confirmed.",
-            //               })
-            //             }
-            //           >
-            //             Yes
-            //           </button>
-            //           <button
-            //             type="button"
-            //             className="rounded-md border px-3 py-1"
-            //             onClick={() =>
-            //               addToolOutput({
-            //                 tool: toolName,
-            //                 toolCallId: callId,
-            //                 output: "No, denied.",
-            //               })
-            //             }
-            //           >
-            //             No
-            //           </button>
-            //         </div>
-            //       </div>
-            //     );
-            //   }
-            //   case "output-available":
-            //     return (
-            //       <div key={callId}>
-            //         {toolName}:{" "}
-            //         {"output" in part && typeof part.output === "string"
-            //           ? part.output
-            //           : JSON.stringify("output" in part ? part.output : null)}
-            //       </div>
-            //     );
-            //   case "output-error":
-            //     return (
-            //       <div key={callId}>
-            //         Error in {toolName}:{" "}
-            //         {"errorText" in part ? part.errorText : "Unknown error"}
-            //       </div>
-            //     );
-            //   default:
-            //     return (
-            //       <pre key={callId}>
-            //         {toolName}: {JSON.stringify(part, null, 2)}
-            //       </pre>
-            //     );
-            // }
           })}
           <br />
         </div>

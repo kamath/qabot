@@ -20,6 +20,7 @@
 /apps/**/.next/
 /apps/**/out/
 /.turbo
+/apps/**/.turbo/
 
 # production
 /build

@@ -1,0 +1,19 @@
+{
+  "name": "@qabot/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "backend": "bin/backend.ts"
+  },
+  "scripts": {
+    "dev": "bun run --hot bin/backend.ts",
+    "start": "bun run bin/backend.ts"
+  },
+  "dependencies": {
+    "@qabot/rpc": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
