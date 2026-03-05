@@ -12,7 +12,7 @@
       "name": "@qabot/backend",
       "version": "0.1.0",
       "bin": {
-        "somecommand": "bin/somecommand.ts",
+        "backend": "bin/backend.ts",
       },
       "dependencies": {
         "@qabot/rpc": "workspace:*",

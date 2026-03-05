@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "bin": {
-    "somecommand": "bin/somecommand.ts"
+    "backend": "bin/backend.ts"
   },
   "scripts": {
-    "dev": "bun run --hot bin/somecommand.ts",
-    "start": "bun run bin/somecommand.ts"
+    "dev": "bun run --hot bin/backend.ts",
+    "start": "bun run bin/backend.ts"
   },
   "dependencies": {
     "@qabot/rpc": "workspace:*"

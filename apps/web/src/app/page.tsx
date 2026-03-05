@@ -8,7 +8,10 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { backendClient } from "./../lib/backend-client";
-import { BackendGreetingResponse } from "@qabot/rpc";
+import {
+  isBackendGreetingResponse,
+  isEchoResponse,
+} from "@qabot/rpc";
 
 export default function Home() {
   const { messages, sendMessage } = useChat({
@@ -29,7 +32,13 @@ export default function Home() {
     queryKey: ["backend", "ping"],
     queryFn: async () => {
       const res = await backendClient.ping.$get();
-      return (await res.json()) as BackendGreetingResponse;
+      const payload = await res.json();
+
+      if (!isBackendGreetingResponse(payload)) {
+        throw new Error("Invalid ping response shape from backend");
+      }
+
+      return payload;
     },
   });
 
@@ -38,7 +47,12 @@ export default function Home() {
       const res = await backendClient.echo.$post({
         json: { message },
       });
-      const payload = (await res.json()) as { received: string };
+      const payload = await res.json();
+
+      if (!isEchoResponse(payload)) {
+        throw new Error("Invalid echo response shape from backend");
+      }
+
       return payload.received;
     },
   });
