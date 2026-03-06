@@ -1,6 +1,6 @@
 import { createACPProvider } from "@mcpc-tech/acp-ai-provider"
 import { convertToModelMessages, streamText } from "ai"
-import type { ToolSet, UIMessage } from "ai"
+import type { UIMessage } from "ai"
 import { Hono } from "hono"
 
 const chat = new Hono()
