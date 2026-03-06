@@ -7,12 +7,12 @@ import {
 } from "ai"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { checkBackendSanity } from "@/lib/backend-client"
+import { backendUrl, checkBackendSanity } from "@/lib/backend-client"
 
 export default function Home() {
 	const { messages, sendMessage } = useChat({
 		transport: new DefaultChatTransport({
-			api: "/api/chat",
+			api: `${backendUrl}/api/chat`,
 		}),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 		async onToolCall({ toolCall }) {

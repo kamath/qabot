@@ -1,6 +1,8 @@
 import { Hono } from "hono"
-import chat from "./routes/chat"
-import sanity from "./routes/sanity"
+import { swaggerUI } from "@hono/swagger-ui"
+import { openAPIRouteHandler } from "hono-openapi"
+import { chatRoute } from "./routes/chat"
+import { sanityRoute } from "./routes/sanity"
 
 const CORS_HEADERS = {
 	"Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -22,14 +24,31 @@ function withCors(request: Request, response: Response): Response {
 	return corsResponse
 }
 
-const app = new Hono<{ Bindings: Bindings }>()
+const base = new Hono<{ Bindings: Bindings }>()
+const openApiSpecHandler = openAPIRouteHandler(base, {
+	includeEmptyPaths: true,
+	documentation: {
+		info: {
+			title: "Backend API",
+			version: "1.0.0",
+		},
+	},
+})
 
-app.route("/api", chat)
-app.route("/api", sanity)
+const app = base
+	.get("/openapi", openApiSpecHandler)
+	.get(
+		"/openapi/ui",
+		swaggerUI({
+			url: "/openapi",
+		}),
+	)
+	.route("/", sanityRoute)
+	.route("/", chatRoute)
 
 export type AppType = typeof app
 
-export { app }
+export { app, openApiSpecHandler }
 
 export default {
 	async fetch(request: Request, env: Bindings): Promise<Response> {
