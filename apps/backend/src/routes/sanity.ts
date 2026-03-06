@@ -1,11 +1,10 @@
-import { Hono } from "hono"
 import { describeRoute, resolver } from "hono-openapi"
+import { Hono } from "hono"
 import { SanityCheckResponseSchema } from "../schemas"
+import type { AppEnv } from "../env"
 
-const sanity = new Hono()
-
-sanity.get(
-	"/sanity",
+export const sanityRoute = new Hono<AppEnv>().get(
+	"/api/sanity",
 	describeRoute({
 		summary: "Sanity check",
 		description: "Returns backend health information.",
@@ -20,7 +19,7 @@ sanity.get(
 			},
 		},
 	}),
-	c => {
+	async (c) => {
 		const response = SanityCheckResponseSchema.parse({
 			status: "ok",
 			service: "backend",
@@ -30,5 +29,3 @@ sanity.get(
 		return c.json(response)
 	},
 )
-
-export default sanity

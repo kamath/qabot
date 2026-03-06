@@ -1,11 +1,10 @@
 import { createACPProvider } from "@mcpc-tech/acp-ai-provider"
 import { convertToModelMessages, streamText } from "ai"
 import type { UIMessage } from "ai"
+import { describeRoute, resolver, validator } from "hono-openapi"
 import { Hono } from "hono"
-import { describeRoute, resolver } from "hono-openapi"
+import type { AppEnv } from "../env"
 import { z } from "zod"
-
-const chat = new Hono()
 
 const provider = createACPProvider({
 	command: "codex-acp",
@@ -15,10 +14,13 @@ const provider = createACPProvider({
 		mcpServers: [],
 	},
 })
+const ChatRequestSchema = z.object({
+	messages: z.array(z.unknown()),
+})
 const ChatStreamSchema = z.string()
 
-chat.post(
-	"/chat",
+export const chatRoute = new Hono<AppEnv>().post(
+	"/api/chat",
 	describeRoute({
 		summary: "Chat completion stream",
 		description: "Proxies a chat stream from the configured AI provider.",
@@ -33,9 +35,9 @@ chat.post(
 			},
 		},
 	}),
-	async c => {
-		const body = await c.req.json().catch(() => ({}))
-		// biome-ignore lint: plugin-enforced assertion is intentional here
+	validator("json", ChatRequestSchema),
+	async (c) => {
+		const body = c.req.valid("json")
 		const messages = body.messages as UIMessage[]
 		const modelMessages = await convertToModelMessages(messages)
 
@@ -48,5 +50,3 @@ chat.post(
 		return result.toUIMessageStreamResponse()
 	},
 )
-
-export default chat
