@@ -19,7 +19,7 @@ export const sanityRoute = new Hono<AppEnv>().get(
 			},
 		},
 	}),
-	async (c) => {
+	async c => {
 		const response = SanityCheckResponseSchema.parse({
 			status: "ok",
 			service: "backend",

@@ -15,7 +15,7 @@ const provider = createACPProvider({
 	},
 })
 const ChatRequestSchema = z.object({
-	messages: z.array(z.unknown()),
+	messages: z.array(z.custom<UIMessage>(() => true)),
 })
 const ChatStreamSchema = z.string()
 
@@ -36,9 +36,9 @@ export const chatRoute = new Hono<AppEnv>().post(
 		},
 	}),
 	validator("json", ChatRequestSchema),
-	async (c) => {
+	async c => {
 		const body = c.req.valid("json")
-		const messages = body.messages as UIMessage[]
+		const messages = body.messages
 		const modelMessages = await convertToModelMessages(messages)
 
 		const result = streamText({
