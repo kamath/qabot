@@ -14,17 +14,14 @@
 		}
 	},
 	"scripts": {
-		"dev": "wrangler dev --port 6970 --inspector-port 6971",
+		"dev": "tsx watch src/node.ts",
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "node ../../scripts/cf-typegen.mjs",
-		"build": "pnpm -r --filter '@flamecast/*' build && tsc --noEmit",
+		"build": "tsc --noEmit",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@flamecast/auth": "workspace:*",
-		"@flamecast/db": "workspace:*",
-		"@flamecast/utils": "workspace:*",
 		"@hono/standard-validator": "^0.2.2",
 		"@hono/swagger-ui": "^0.5.3",
 		"@mcpc-tech/acp-ai-provider": "^0.2.6",
@@ -48,6 +45,7 @@
 		"zod-openapi": "^5.4.6"
 	},
 	"devDependencies": {
+		"@hono/node-server": "^1.13.9",
 		"@types/libsodium-wrappers": "^0.8.2",
 		"@types/node": "^25.2.3",
 		"tsx": "^4.19.0",

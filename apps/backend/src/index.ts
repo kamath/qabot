@@ -10,7 +10,7 @@ const CORS_HEADERS = {
 	"Access-Control-Max-Age": "86400",
 }
 
-export type Bindings = {}
+export type Bindings = Record<string, unknown>
 
 function withCors(request: Request, response: Response): Response {
 	const origin = request.headers.get("origin") ?? "*"
@@ -32,11 +32,7 @@ export type AppType = typeof app
 export { app }
 
 export default {
-	async fetch(
-		request: Request,
-		env: Bindings,
-		ctx: ExecutionContext,
-	): Promise<Response> {
+	async fetch(request: Request, env: Bindings): Promise<Response> {
 		const origin = request.headers.get("origin") ?? "*"
 
 		if (request.method === "OPTIONS") {
@@ -49,7 +45,7 @@ export default {
 			})
 		}
 
-		const response = await app.fetch(request, env, ctx)
+		const response = await app.fetch(request, env)
 		return withCors(request, response)
 	},
 }

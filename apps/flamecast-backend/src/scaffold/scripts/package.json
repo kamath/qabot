@@ -1,6 +1,0 @@
-{
-	"private": true,
-	"dependencies": {
-		"@flamecast/api": "https://pkg.stainless.com/s/flamecast-typescript/257cb9d63847f7a95b55d6b1ee2354c2cd1086d6/dist.tar.gz"
-	}
-}

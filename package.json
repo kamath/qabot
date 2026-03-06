@@ -7,7 +7,7 @@
 		"postinstall": "turbo run build",
 		"build": "turbo run build",
 		"dev:apps": "pnpm -r --parallel --filter @qabot/web --filter backend run dev",
-		"dev": "node scripts/dev-setup.mjs && turbo run dev",
+		"dev": "pnpm i && turbo run dev",
 		"lint": "turbo run lint",
 		"check": "biome check --error-on-warnings",
 		"fmt": "biome check --write --unsafe",
@@ -15,8 +15,7 @@
 		"typecheck": "turbo run check-types",
 		"secrets:pull": "turbo run secrets:pull",
 		"secrets:push": "turbo run secrets:push",
-		"prepare": "husky",
-		"link:cli": "node scripts/dev-setup.mjs && pnpm build && cd packages/cli && pnpm link --global"
+		"prepare": "husky"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.3",

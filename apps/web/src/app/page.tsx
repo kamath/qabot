@@ -10,7 +10,7 @@ import { useState } from "react"
 import { checkBackendSanity } from "@/lib/backend-client"
 
 export default function Home() {
-	const { messages, sendMessage, addToolOutput } = useChat({
+	const { messages, sendMessage } = useChat({
 		transport: new DefaultChatTransport({
 			api: "/api/chat",
 		}),
@@ -78,7 +78,7 @@ export default function Home() {
 										{JSON.stringify(part, null, 2)}
 									</pre>
 								)
-					}
+						}
 					})}
 					<br />
 				</div>
