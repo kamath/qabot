@@ -5,7 +5,7 @@
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"postinstall": "turbo run build",
-		"build": "turbo run build",
+		"build": "pnpm check && turbo run build",
 		"dev:apps": "pnpm -r --parallel --filter @qabot/web --filter backend run dev",
 		"dev": "pnpm i && turbo run dev",
 		"lint": "turbo run lint",
