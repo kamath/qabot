@@ -1,4 +1,6 @@
 import { Hono } from "hono"
+import { swaggerUI } from "@hono/swagger-ui"
+import { openAPIRouteHandler } from "hono-openapi"
 import chat from "./routes/chat"
 import sanity from "./routes/sanity"
 
@@ -23,6 +25,26 @@ function withCors(request: Request, response: Response): Response {
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+app.get(
+	"/openapi",
+	openAPIRouteHandler(app, {
+		includeEmptyPaths: true,
+		documentation: {
+			info: {
+				title: "Backend API",
+				version: "1.0.0",
+			},
+		},
+	}),
+)
+
+app.get(
+	"/openapi/ui",
+	swaggerUI({
+		url: "/openapi",
+	}),
+)
 
 app.route("/api", chat)
 app.route("/api", sanity)
