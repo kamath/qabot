@@ -94,6 +94,9 @@ importers:
         specifier: ^5.4.6
         version: 5.4.6(zod@4.3.6)
     devDependencies:
+      '@hono/node-server':
+        specifier: ^1.13.9
+        version: 1.19.9(hono@4.11.9)
       '@types/libsodium-wrappers':
         specifier: ^0.8.2
         version: 0.8.2
